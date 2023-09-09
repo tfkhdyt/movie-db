@@ -3,7 +3,7 @@
   "version": "1.0.50",
   "scripts": {
     "generate": "drizzle-kit generate:pg",
-    "lint": "tsc --noEmit && eslint --fix .",
+    "lint": "tsc --noEmit && eslint --fix src/",
     "outdated": "taze -w --failOnOutdated",
     "build": "bun build src/index.ts --outdir build --target bun",
     "dev": "bun run --hot src/index.ts"
@@ -20,7 +20,9 @@
     "@typescript-eslint/parser": "latest",
     "bun-types": "latest",
     "drizzle-kit": "^0.19.13",
-    "eslint": "^8.49.0"
+    "eslint": "^8.49.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "typescript": "^5.2.2"
   },
   "module": "src/index.js"
 }
