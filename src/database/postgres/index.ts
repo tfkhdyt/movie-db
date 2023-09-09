@@ -7,3 +7,4 @@ export const migrationClient = postgres(POSTGRES_URL, { max: 1 });
 const queryClient = postgres(POSTGRES_URL);
 
 export const db = drizzle(queryClient);
+export type DB = typeof db;

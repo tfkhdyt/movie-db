@@ -1,54 +1,65 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { Elysia } from 'elysia';
-import { flatten, safeParse } from 'valibot';
 
-import { db, migrationClient } from './database/postgres';
-import {
-  insertMovieSchema,
-  moviesSchema,
-} from './database/postgres/schemas/book.schema';
+import { migrationClient } from './database/postgres';
+import { HttpError, ValidationError } from './exceptions/http.exception';
+import { moviePlugin } from './plugins/movie.plugin';
 
 await migrate(drizzle(migrationClient), { migrationsFolder: 'drizzle' });
 
 const app = new Elysia();
 
-app.post('/movies', async ({ body, set }) => {
-  try {
-    const result = safeParse(insertMovieSchema, body);
-    if (!result.success) {
-      set.status = 422;
-      return {
-        error: flatten(result.issues),
-      };
-    }
+app
+  .addError({
+    HttpError,
+    ValidationError,
+  })
+  .onError(({ code, error, set }) => {
+    let errorMessage = 'Unknown error';
+    const errorCode = 500;
 
-    const createdMovie = await db
-      .insert(moviesSchema)
-      .values(result.output)
-      .returning();
-
-    set.status = 201;
-    return {
-      message: 'New movie has been inserted successfully',
-      data: createdMovie[0],
-    };
-  } catch (error) {
     if (error instanceof Error) {
-      set.status = 500;
-      return {
-        error: error.message,
-      };
-    }
-  }
-});
+      errorMessage = error.message;
 
-app.get('/movies', async () => {
-  const movies = await db.select().from(moviesSchema);
-  return {
-    data: movies,
-  };
-});
+      switch (code) {
+        case 'ValidationError':
+          set.status = error.code;
+          return {
+            errors: error.errors,
+          };
+
+        case 'HttpError':
+          set.status = error.code;
+          break;
+
+        case 'PARSE':
+          set.status = 422;
+          errorMessage = `Failed to parse request body. ${error}`;
+          break;
+
+        case 'VALIDATION':
+          set.status = 400;
+          break;
+
+        case 'NOT_FOUND':
+          set.status = 404;
+          break;
+
+        case 'INTERNAL_SERVER_ERROR':
+        case 'UNKNOWN':
+          set.status = 500;
+          break;
+      }
+    }
+
+    set.status = errorCode;
+    return {
+      error: errorMessage,
+    };
+  });
+
+app.use(moviePlugin);
 
 app.listen(3000);
 
