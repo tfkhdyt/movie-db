@@ -1,15 +1,23 @@
 {
-  "name": "pddikti-api",
+  "name": "movie-db-api",
   "version": "1.0.50",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "generate": "drizzle-kit generate:pg",
+    "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {
-    "elysia": "latest"
+    "drizzle-orm": "^0.28.6",
+    "drizzle-valibot": "^0.1.1",
+    "elysia": "latest",
+    "postgres": "^3.3.5",
+    "valibot": "^0.14.0"
   },
   "devDependencies": {
-    "bun-types": "latest"
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "bun-types": "latest",
+    "drizzle-kit": "^0.19.13",
+    "eslint": "^8.49.0"
   },
   "module": "src/index.js"
 }
