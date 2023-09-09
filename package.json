@@ -3,6 +3,7 @@
   "version": "1.0.50",
   "scripts": {
     "generate": "drizzle-kit generate:pg",
+    "build": "bun build src/index.ts --outdir build --target bun",
     "dev": "bun run --hot src/index.ts"
   },
   "dependencies": {
