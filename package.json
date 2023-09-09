@@ -3,6 +3,8 @@
   "version": "1.0.50",
   "scripts": {
     "generate": "drizzle-kit generate:pg",
+    "lint": "tsc --noEmit && eslint --fix .",
+    "outdated": "taze -w --failOnOutdated",
     "build": "bun build src/index.ts --outdir build --target bun",
     "dev": "bun run --hot src/index.ts"
   },
