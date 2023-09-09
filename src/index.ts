@@ -17,18 +17,18 @@ app
   })
   .onError(({ code, error, set }) => {
     let errorMessage = 'Unknown error';
-    const errorCode = 500;
+
+    if (error instanceof ValidationError) {
+      set.status = error.code;
+      return {
+        errors: error.errors,
+      };
+    }
 
     if (error instanceof Error) {
       errorMessage = error.message;
 
       switch (code) {
-        case 'ValidationError':
-          set.status = error.code;
-          return {
-            errors: error.errors,
-          };
-
         case 'HttpError':
           set.status = error.code;
           break;
@@ -51,9 +51,10 @@ app
           set.status = 500;
           break;
       }
+    } else {
+      set.status = 500;
     }
 
-    set.status = errorCode;
     return {
       error: errorMessage,
     };
