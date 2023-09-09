@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "drizzle-orm": "^0.28.6",
-    "drizzle-valibot": "^0.1.1",
     "elysia": "latest",
     "postgres": "^3.3.5",
     "valibot": "^0.14.0"
