@@ -23,4 +23,12 @@ export default class MovieRepoPostgres {
       throw new HttpError('Failed to insert new movie');
     }
   }
+
+  findAllMovies() {
+    try {
+      return this.db.select().from(movies);
+    } catch (error) {
+      throw new HttpError('Failed to find all movies');
+    }
+  }
 }

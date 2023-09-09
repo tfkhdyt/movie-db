@@ -2,10 +2,7 @@ import Elysia from 'elysia';
 import { safeParse } from 'valibot';
 
 import { db } from '../database/postgres';
-import {
-  insertMovieSchema,
-  movies,
-} from '../database/postgres/schemas/movie.schema';
+import { insertMovieSchema } from '../database/postgres/schemas/movie.schema';
 import { ValidationError } from '../exceptions/http.exception';
 import MovieRepoPostgres from '../repositories/postgres/movie.repo';
 import MovieUsecase from '../usecases/movie.usecase';
@@ -25,10 +22,7 @@ export const moviePlugin = new Elysia().group('/movies', (app) => {
   });
 
   app.get('/', async () => {
-    const moviesData = await db.select().from(movies);
-    return {
-      data: moviesData,
-    };
+    return movieUsecase.findAllMovies();
   });
 
   return app;

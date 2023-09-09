@@ -12,4 +12,12 @@ export default class MovieUsecase {
       data: createdMovie,
     };
   }
+
+  async findAllMovies() {
+    const moviesData = await this.movieRepo.findAllMovies();
+
+    return {
+      data: moviesData,
+    };
+  }
 }
