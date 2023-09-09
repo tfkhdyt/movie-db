@@ -9,9 +9,9 @@ export class HttpError extends Error {
 
 export class ValidationError extends Error {
   code = 422;
-  errors: unknown = null;
+  errors: string[] = [];
 
-  constructor(error: unknown) {
+  constructor(error: string[]) {
     super('');
     this.errors = error;
   }
