@@ -1,5 +1,5 @@
 import Elysia from 'elysia';
-import { flatten, safeParse } from 'valibot';
+import { safeParse } from 'valibot';
 
 import { db } from '../database/postgres';
 import {
@@ -17,7 +17,7 @@ export const moviePlugin = new Elysia().group('/movies', (app) => {
   app.post('/', async ({ body, set }) => {
     const result = safeParse(insertMovieSchema, body);
     if (!result.success) {
-      throw new ValidationError(flatten(result.issues));
+      throw new ValidationError(result.issues.map((err) => err.message));
     }
 
     set.status = 201;
