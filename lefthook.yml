@@ -1,0 +1,9 @@
+pre-push:
+  commands:
+    taze:
+      run: bun run outdated
+pre-commit:
+  commands:
+    lint:
+      glob: '**/*.ts'
+      run: bun run lint
