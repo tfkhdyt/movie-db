@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, varchar, serial } from 'drizzle-orm/pg-core';
+import { pgTable, serial,text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-valibot';
 
 export const moviesSchema = pgTable('movies', {
