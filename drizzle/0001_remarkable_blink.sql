@@ -1,0 +1,1 @@
+ALTER TABLE "movies" RENAME COLUMN "releaseDate" TO "release_date";

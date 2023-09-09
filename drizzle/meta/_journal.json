@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1694244815260,
+      "tag": "0000_blushing_polaris",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1694244858131,
+      "tag": "0001_remarkable_blink",
+      "breakpoints": true
+    }
+  ]
+}
