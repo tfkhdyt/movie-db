@@ -1,5 +1,6 @@
 import { pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import {
+  Input,
   isoTimestamp,
   maxLength,
   minLength,
@@ -17,9 +18,6 @@ export const movies = pgTable('movies', {
   releaseDate: timestamp('release_date', { mode: 'string' }),
 });
 
-export type Movie = typeof movies.$inferSelect;
-export type NewMovie = typeof movies.$inferInsert;
-
 export const insertMovieSchema = object({
   title: string('Title must be a string', [
     minLength(1, 'Title cannot be empty'),
@@ -31,3 +29,20 @@ export const insertMovieSchema = object({
   ),
   releaseDate: optional(string([isoTimestamp('Invalid release date')])),
 });
+
+export type NewMovie = Input<typeof insertMovieSchema>;
+
+export const updateMovieSchema = object({
+  title: optional(
+    string('Title must be a string', [
+      maxLength(50, 'Title should be less than 50 character'),
+    ]),
+  ),
+  description: optional(string('Description must be a string')),
+  poster: optional(
+    string('Poster must be a string', [url('Invalid poster image URl')]),
+  ),
+  releaseDate: optional(string([isoTimestamp('Invalid release date')])),
+});
+
+export type UpdateMovie = Input<typeof updateMovieSchema>;
