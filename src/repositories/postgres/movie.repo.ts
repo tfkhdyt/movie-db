@@ -1,7 +1,11 @@
 import { eq } from 'drizzle-orm';
 
 import { DB } from '../../database/postgres';
-import { movies, NewMovie } from '../../database/postgres/schemas/movie.schema';
+import {
+  movies,
+  NewMovie,
+  UpdateMovie,
+} from '../../database/postgres/schemas/movie.schema';
 import { HttpError } from '../../exceptions/http.exception';
 
 export default class MovieRepoPostgres {
@@ -28,7 +32,7 @@ export default class MovieRepoPostgres {
 
   findAllMovies() {
     try {
-      return this.db.select().from(movies);
+      return this.db.select().from(movies).orderBy(movies.id);
     } catch (error) {
       throw new HttpError('Failed to find all movies');
     }
@@ -51,6 +55,24 @@ export default class MovieRepoPostgres {
         throw error;
       }
       throw new HttpError('Failed to find movie by id');
+    }
+  }
+
+  async updateMovie(id: number, data: UpdateMovie) {
+    try {
+      const updatedMovie = await this.db
+        .update(movies)
+        .set(data)
+        .where(eq(movies.id, id))
+        .returning();
+      if (updatedMovie.length === 0) {
+        throw new HttpError(`Failed to update movie with id ${id}`);
+      }
+
+      return updatedMovie[0];
+    } catch (error) {
+      if (error instanceof HttpError) throw error;
+      throw new HttpError('Failed to update movie');
     }
   }
 }

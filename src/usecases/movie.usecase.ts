@@ -1,4 +1,7 @@
-import { NewMovie } from '../database/postgres/schemas/movie.schema';
+import {
+  NewMovie,
+  UpdateMovie,
+} from '../database/postgres/schemas/movie.schema';
 import MovieRepoPostgres from '../repositories/postgres/movie.repo';
 
 export default class MovieUsecase {
@@ -26,6 +29,16 @@ export default class MovieUsecase {
 
     return {
       data: movieData,
+    };
+  }
+
+  async updateMovie(id: number, payload: UpdateMovie) {
+    await this.findMovieByID(id);
+    const updatedMovie = await this.movieRepo.updateMovie(id, payload);
+
+    return {
+      message: `Movie with id ${id} has been updated successfully`,
+      data: updatedMovie,
     };
   }
 }
