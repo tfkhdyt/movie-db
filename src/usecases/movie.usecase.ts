@@ -41,4 +41,13 @@ export default class MovieUsecase {
       data: updatedMovie,
     };
   }
+
+  async deleteMovie(id: number) {
+    await this.findMovieByID(id);
+    await this.movieRepo.deleteMovie(id);
+
+    return {
+      message: `Movie with id ${id} has been deleted`,
+    };
+  }
 }

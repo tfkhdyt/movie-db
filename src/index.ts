@@ -10,55 +10,44 @@ await migrate(drizzle(migrationClient), { migrationsFolder: 'drizzle' });
 
 const app = new Elysia();
 
-app
-  .addError({
-    HttpError,
-    ValidationError,
-  })
-  .onError(({ code, error, set }) => {
-    let errorMessage = 'Unknown error';
-
-    if (error instanceof ValidationError) {
-      set.status = error.code;
-      return {
-        errors: error.errors,
-      };
-    }
-
-    if (error instanceof Error) {
-      errorMessage = error.message;
-
-      switch (code) {
-        case 'HttpError':
-          set.status = error.code;
-          break;
-
-        case 'PARSE':
-          set.status = 422;
-          errorMessage = `Failed to parse request body. ${error}`;
-          break;
-
-        case 'VALIDATION':
-          set.status = 400;
-          break;
-
-        case 'NOT_FOUND':
-          set.status = 404;
-          break;
-
-        case 'INTERNAL_SERVER_ERROR':
-        case 'UNKNOWN':
-          set.status = 500;
-          break;
-      }
-    } else {
-      set.status = 500;
-    }
-
+app.onError(({ code, error, set }) => {
+  if (error instanceof ValidationError) {
+    set.status = error.code;
     return {
-      error: errorMessage,
+      errors: error.errors,
     };
-  });
+  }
+
+  if (error instanceof HttpError) {
+    set.status = error.code;
+    return {
+      error: error.message,
+    };
+  }
+
+  switch (code) {
+    case 'PARSE':
+      set.status = 422;
+      break;
+
+    case 'VALIDATION':
+      set.status = 400;
+      break;
+
+    case 'NOT_FOUND':
+      set.status = 404;
+      break;
+
+    case 'INTERNAL_SERVER_ERROR':
+    case 'UNKNOWN':
+      set.status = 500;
+      break;
+  }
+
+  return {
+    error: error.message,
+  };
+});
 
 app.use(moviePlugin);
 

@@ -75,4 +75,15 @@ export default class MovieRepoPostgres {
       throw new HttpError('Failed to update movie');
     }
   }
+
+  async deleteMovie(id: number) {
+    try {
+      await this.db.delete(movies).where(eq(movies.id, id));
+    } catch (error) {
+      throw new HttpError(
+        `Failed to delete movie with id ${id}. ${error}`,
+        500,
+      );
+    }
+  }
 }

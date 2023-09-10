@@ -14,6 +14,7 @@ export const moviePlugin = new Elysia().group('/movies', (app) => {
   const movieRepo = new MovieRepoPostgres(db);
   const movieUsecase = new MovieUsecase(movieRepo);
 
+  // insert movie
   app.post('/', async ({ body, set }) => {
     const result = safeParse(insertMovieSchema, body);
     if (!result.success) {
@@ -24,36 +25,40 @@ export const moviePlugin = new Elysia().group('/movies', (app) => {
     return movieUsecase.insertMovie(result.output);
   });
 
+  // find all movies
   app.get('/', async () => {
     return movieUsecase.findAllMovies();
   });
 
-  app.get(
+  app.group(
     '/:id',
-    async ({ params: { id } }) => {
-      return movieUsecase.findMovieByID(id);
-    },
     {
       params: t.Object({
         id: t.Numeric({ error: 'Movie id must be a numeric' }),
       }),
     },
-  );
+    (app) => {
+      // find one movie
+      app.get('/', async ({ params: { id } }) => {
+        return movieUsecase.findMovieByID(id);
+      });
 
-  app.put(
-    '/:id',
-    ({ params: { id }, body }) => {
-      const result = safeParse(updateMovieSchema, body);
-      if (!result.success) {
-        throw new ValidationError(result.issues);
-      }
+      // update movie
+      app.put('/', ({ params: { id }, body }) => {
+        const result = safeParse(updateMovieSchema, body);
+        if (!result.success) {
+          throw new ValidationError(result.issues);
+        }
 
-      return movieUsecase.updateMovie(id, result.output);
-    },
-    {
-      params: t.Object({
-        id: t.Numeric({ error: 'Movie id must be a numeric' }),
-      }),
+        return movieUsecase.updateMovie(id, result.output);
+      });
+
+      // delete movie
+      app.delete('/', ({ params: { id } }) => {
+        return movieUsecase.deleteMovie(id);
+      });
+
+      return app;
     },
   );
 
