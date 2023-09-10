@@ -1,3 +1,5 @@
+import { eq } from 'drizzle-orm';
+
 import { DB } from '../../database/postgres';
 import { movies, NewMovie } from '../../database/postgres/schemas/movie.schema';
 import { HttpError } from '../../exceptions/http.exception';
@@ -29,6 +31,26 @@ export default class MovieRepoPostgres {
       return this.db.select().from(movies);
     } catch (error) {
       throw new HttpError('Failed to find all movies');
+    }
+  }
+
+  async findMovieByID(id: number) {
+    try {
+      const movieData = await this.db
+        .select()
+        .from(movies)
+        .where(eq(movies.id, id))
+        .limit(1);
+      if (movieData.length === 0) {
+        throw new HttpError(`Movie with id ${id} is not found`, 404);
+      }
+
+      return movieData[0];
+    } catch (error) {
+      if (error instanceof HttpError) {
+        throw error;
+      }
+      throw new HttpError('Failed to find movie by id');
     }
   }
 }

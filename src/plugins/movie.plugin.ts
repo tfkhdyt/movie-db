@@ -1,4 +1,4 @@
-import Elysia from 'elysia';
+import Elysia, { t } from 'elysia';
 import { safeParse } from 'valibot';
 
 import { db } from '../database/postgres';
@@ -24,6 +24,18 @@ export const moviePlugin = new Elysia().group('/movies', (app) => {
   app.get('/', async () => {
     return movieUsecase.findAllMovies();
   });
+
+  app.get(
+    '/:id',
+    async ({ params: { id } }) => {
+      return movieUsecase.findMovieByID(id);
+    },
+    {
+      params: t.Object({
+        id: t.Numeric({ error: 'Movie id must be a numeric' }),
+      }),
+    },
+  );
 
   return app;
 });

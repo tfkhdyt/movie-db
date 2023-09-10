@@ -20,4 +20,12 @@ export default class MovieUsecase {
       data: moviesData,
     };
   }
+
+  async findMovieByID(id: number) {
+    const movieData = await this.movieRepo.findMovieByID(id);
+
+    return {
+      data: movieData,
+    };
+  }
 }
