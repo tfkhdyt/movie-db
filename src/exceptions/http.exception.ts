@@ -1,3 +1,5 @@
+import { Issues } from 'valibot';
+
 export class HttpError extends Error {
   code: number;
 
@@ -9,10 +11,10 @@ export class HttpError extends Error {
 
 export class ValidationError extends Error {
   code = 422;
-  errors: string[] = [];
+  errors: string[];
 
-  constructor(error: string[]) {
+  constructor(error: Issues) {
     super('');
-    this.errors = error;
+    this.errors = error.map((err) => err.message);
   }
 }
