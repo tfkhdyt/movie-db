@@ -2,11 +2,12 @@
   "name": "movie-db-api",
   "version": "1.0.50",
   "scripts": {
+    "start": "bun run build && bun run build/index.js",
+    "dev": "bun run --hot src/index.ts",
+    "build": "bun build src/index.ts --outdir build --target bun",
     "generate": "drizzle-kit generate:pg",
     "lint": "tsc --noEmit && eslint --fix src/",
-    "outdated": "taze -w --failOnOutdated",
-    "build": "bun build src/index.ts --outdir build --target bun",
-    "dev": "bun run --hot src/index.ts"
+    "outdated": "taze -w --failOnOutdated"
   },
   "dependencies": {
     "drizzle-orm": "^0.28.6",
